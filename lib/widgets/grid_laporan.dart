@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:nicov1/helper/string_titlecase.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -51,7 +51,7 @@ class _GridLaporanState extends State<GridLaporan> {
 
       try {
         Directory? downloadsDirectory =
-            await DownloadsPathProvider.downloadsDirectory;
+            await DownloadsPath.downloadsDirectory();
         String fullPath = downloadsDirectory!.path + location;
         String token = tokenParam;
         final headers = {
