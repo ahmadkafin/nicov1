@@ -17,6 +17,7 @@ class _LoginCardState extends State<LoginCard> {
   final _passwordCont = TextEditingController();
 
   bool _isLoading = false;
+  bool _isObscure = false;
 
   void _showErrorDialog(String msg) {
     showDialog(
@@ -185,7 +186,7 @@ class _LoginCardState extends State<LoginCard> {
                   focusColor: Colors.black,
                   fillColor: Colors.black,
                 ),
-                obscureText: true,
+                obscureText: !_isObscure,
                 controller: _passwordCont,
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -196,6 +197,29 @@ class _LoginCardState extends State<LoginCard> {
                 onSaved: (value) {
                   _authData['password'] = value.toString();
                 },
+              ),
+            ),
+          ),
+          Container(
+            child: CheckboxListTile(
+              title: Text(
+                "Show Password",
+                style: TextStyle(color: Colors.white),
+              ),
+              value: _isObscure,
+              onChanged: (bool? newValue) {
+                setState(
+                  () {
+                    _isObscure = newValue!;
+                    print(_isObscure);
+                  },
+                );
+              },
+              checkColor: Colors.black,
+              activeColor: Colors.white,
+              tileColor: Colors.white,
+              side: BorderSide(
+                color: Colors.white,
               ),
             ),
           ),
@@ -214,7 +238,7 @@ class _LoginCardState extends State<LoginCard> {
                       padding: EdgeInsets.symmetric(
                         horizontal: widget.deviceSize.width > 600
                             ? 158
-                            : widget.deviceSize.width / 2.35,
+                            : widget.deviceSize.width * 0.44,
                       ),
                       textStyle: const TextStyle(
                         color: Colors.black,

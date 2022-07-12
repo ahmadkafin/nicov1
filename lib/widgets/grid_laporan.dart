@@ -252,8 +252,11 @@ class _GridLaporanState extends State<GridLaporan> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          removeLt(appState[index].Table_name)
-                                              .toTitleCase(),
+                                          appState[index].Table_name == "lt_pls"
+                                              ? "Patroli Survey Kebocoran"
+                                              : removeLt((appState[index]
+                                                      .Table_name))
+                                                  .toTitleCase(),
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
                                           style: const TextStyle(

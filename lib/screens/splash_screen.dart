@@ -1,6 +1,7 @@
 import 'package:easy_splash_screen/easy_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nicov1/main.dart';
+import 'package:nicov1/screens/main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -14,6 +15,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    initialization();
+  }
+
+  void initialization() async {
+    await Future.delayed(const Duration(seconds: 20));
+    print('go!');
   }
 
   @override
@@ -31,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
         "Loading",
         style: TextStyle(color: Colors.white),
       ),
-      durationInSeconds: 10,
+      durationInSeconds: 20,
     );
   }
 }
