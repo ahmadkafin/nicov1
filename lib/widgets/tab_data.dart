@@ -56,7 +56,7 @@ class _TabDataState extends State<TabData> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           bottom: PreferredSize(
-            preferredSize: const Size(5, 5),
+            preferredSize: const Size(0, 30),
             child: TabBar(
               isScrollable: true,
               padding: const EdgeInsets.only(
