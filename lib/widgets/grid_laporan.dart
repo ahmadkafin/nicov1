@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:nicov1/helper/string_titlecase.dart';
@@ -206,103 +205,82 @@ class _GridLaporanState extends State<GridLaporan> {
                         ),
                       ),
                     ),
-                    AnimationLimiter(
-                      child: SliverGrid(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          mainAxisExtent:
-                              deviceSize.width > 600 ? 100.0 : 120.0,
-                          mainAxisSpacing: 5.0,
-                          crossAxisSpacing: 5.0,
-                          childAspectRatio: deviceSize.width > 600 ? 2.0 : 1.0,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            return AnimationConfiguration.staggeredGrid(
-                              position: index,
-                              duration: const Duration(milliseconds: 375),
-                              columnCount: appState.length,
-                              child: ScaleAnimation(
-                                child: FadeInAnimation(
-                                  curve: Curves.easeOut,
-                                  child: GestureDetector(
-                                    onLongPress: () {
-                                      final month =
-                                          DateTime.now().month.toString();
-                                      final year =
-                                          DateTime.now().year.toString();
-                                      String nameFile =
-                                          '${removeLt(appState[index].Table_name).toTitleCase()}-$month-$year';
-                                      String tableName =
-                                          removeLt(appState[index].Table_name);
-                                      dialogShow(context, tableName, nameFile,
-                                          appState[index].Area, token!);
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      color: appState[index].Status == "1"
-                                          ? Colors.grey
-                                          : ar == ""
-                                              ? Colors.blue
-                                              : Colors.blue,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Sheet.${index + 1}'.toTitleCase(),
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 4,
-                                              vertical: 7,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  appState[index].Table_name ==
-                                                          "lt_pls"
-                                                      ? "Patroli Survey Kebocoran"
-                                                      : removeLt(
-                                                              (appState[index]
-                                                                  .Table_name))
-                                                          .toTitleCase(),
-                                                  textAlign: TextAlign.center,
-                                                  maxLines: 2,
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15.0,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  appState[index].Status == "1"
-                                                      ? "Approved"
-                                                      : ar == ""
-                                                          ? ""
-                                                          : "",
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                    SliverGrid(
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200.0,
+                        mainAxisExtent: deviceSize.width > 600 ? 100.0 : 120.0,
+                        mainAxisSpacing: 5.0,
+                        crossAxisSpacing: 5.0,
+                        childAspectRatio: deviceSize.width > 600 ? 2.0 : 1.0,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return GestureDetector(
+                            onLongPress: () {
+                              final month = DateTime.now().month.toString();
+                              final year = DateTime.now().year.toString();
+                              String nameFile =
+                                  '${removeLt(appState[index].Table_name).toTitleCase()}-$month-$year';
+                              String tableName =
+                                  removeLt(appState[index].Table_name);
+                              dialogShow(context, tableName, nameFile,
+                                  appState[index].Area, token!);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              color: appState[index].Status == "1"
+                                  ? Colors.grey
+                                  : ar == ""
+                                      ? Colors.blue
+                                      : Colors.blue,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Sheet.${index + 1}'.toTitleCase(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                      vertical: 7,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          removeLt(appState[index].Table_name)
+                                              .toTitleCase(),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        Text(
+                                          appState[index].Status == "1"
+                                              ? "Approved"
+                                              : ar == ""
+                                                  ? ""
+                                                  : "",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            );
-                          },
-                          childCount: appState.length,
-                        ),
+                            ),
+                          );
+                        },
+                        childCount: appState.length,
                       ),
                     ),
                   ],
