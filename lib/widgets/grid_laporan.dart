@@ -209,11 +209,11 @@ class _GridLaporanState extends State<GridLaporan> {
                     AnimationLimiter(
                       child: SliverGrid(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
+                          crossAxisCount: 2,
                           mainAxisExtent:
-                              deviceSize.width > 600 ? 100.0 : 120.0,
-                          mainAxisSpacing: 5.0,
-                          crossAxisSpacing: 5.0,
+                              deviceSize.width > 600 ? 300.0 : 250.0,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
                           childAspectRatio: deviceSize.width > 600 ? 2.0 : 1.0,
                         ),
                         delegate: SliverChildBuilderDelegate(
@@ -253,7 +253,7 @@ class _GridLaporanState extends State<GridLaporan> {
                                             'Sheet.${index + 1}'.toTitleCase(),
                                             style: const TextStyle(
                                               color: Colors.white,
-                                              fontSize: 20.0,
+                                              fontSize: 15.0,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
@@ -268,10 +268,14 @@ class _GridLaporanState extends State<GridLaporan> {
                                                   appState[index].Table_name ==
                                                           "lt_pls"
                                                       ? "Patroli Survey Kebocoran"
-                                                      : removeLt(
-                                                              (appState[index]
+                                                      : appState[index]
+                                                                  .Table_name ==
+                                                              "lt_mrs"
+                                                          ? "MRS"
+                                                          : removeLt((appState[
+                                                                      index]
                                                                   .Table_name))
-                                                          .toTitleCase(),
+                                                              .toTitleCase(),
                                                   textAlign: TextAlign.center,
                                                   maxLines: 2,
                                                   style: const TextStyle(
