@@ -16,15 +16,17 @@ import '../providers/auth.dart';
 import '../providers/data_laporan.dart';
 
 class GridLaporan extends StatefulWidget {
-  GridLaporan(
-      {Key? key,
-      required this.area,
-      required this.laporan,
-      required this.dataGet})
-      : super(key: key);
+  GridLaporan({
+    Key? key,
+    required this.area,
+    required this.laporan,
+    required this.dataGet,
+    required this.globalScaffoldKey,
+  }) : super(key: key);
   final String? area;
   final Future<List<Laporan>> laporan;
   Future<List<Laporan>>? dataGet;
+  final globalScaffoldKey;
 
   @override
   State<GridLaporan> createState() => _GridLaporanState();
@@ -45,7 +47,7 @@ class _GridLaporanState extends State<GridLaporan> {
       final month = DateTime.now().month.toString();
       final year = DateTime.now().year.toString();
       if (Platform.isAndroid) {
-        location = "/nico/$year/$month/$area";
+        location = "/NiCO/$year/$month/$area";
       } else {
         location = (await getApplicationDocumentsDirectory()).path;
       }
@@ -78,6 +80,7 @@ class _GridLaporanState extends State<GridLaporan> {
         await dio.download(
           url,
           '$fullPath/$nameFile.pdf',
+          deleteOnError: false,
           onReceiveProgress: (receivedBytes, totalBytes) {
             setState(
               () {
@@ -89,6 +92,7 @@ class _GridLaporanState extends State<GridLaporan> {
           },
         );
       } catch (error) {
+        // ignore: avoid_print
         print(error);
         throw (error);
       }
@@ -107,16 +111,6 @@ class _GridLaporanState extends State<GridLaporan> {
       );
     }
   }
-
-  final snackBar = SnackBar(
-    content: const Text('Yay! A SnackBar!'),
-    action: SnackBarAction(
-      label: 'Undo',
-      onPressed: () {
-        // Some code to undo the change.
-      },
-    ),
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -227,16 +221,38 @@ class _GridLaporanState extends State<GridLaporan> {
                                   curve: Curves.easeOut,
                                   child: GestureDetector(
                                     onLongPress: () {
-                                      final month =
-                                          DateTime.now().month.toString();
+                                      // final month =
+                                      //     DateTime.now().month.toString();
+                                      final month = DateFormat("MMMM", "id_ID")
+                                          .format(DateTime.now())
+                                          .toTitleCase()
+                                          .toString();
                                       final year =
                                           DateTime.now().year.toString();
+                                      // String nameFile =
+                                      //     '${removeLt(appState[index].Table_name).toTitleCase()}-$month-$year';
                                       String nameFile =
-                                          '${removeLt(appState[index].Table_name).toTitleCase()}-$month-$year';
+                                          'LT($month$year)_Area(${appState[index].Area})_Sheet(${index + 1})';
                                       String tableName =
                                           removeLt(appState[index].Table_name);
-                                      dialogShow(context, tableName, nameFile,
-                                          appState[index].Area, token!);
+                                      dialogShow(
+                                        context,
+                                        tableName.toTitleCase(),
+                                        appState[index].Area,
+                                        token!,
+                                      ).then(
+                                        (value) => value
+                                            ? download(
+                                                nameFile,
+                                                token,
+                                                tableName,
+                                                widget.area!,
+                                              ).then(
+                                                (value) => showSnackbar(
+                                                    "Anda telah mengunduh ${tableName.toTitleCase()} area : ${appState[index].Area}.\nAnda bisa melihat file tersebut di folder /Downloads/NiCO/"),
+                                              )
+                                            : null,
+                                      );
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
@@ -325,18 +341,24 @@ class _GridLaporanState extends State<GridLaporan> {
     return tableName;
   }
 
-  Future<dynamic> dialogShow(BuildContext context, String tableName,
-      String nameFile, String area, String tokenparam) {
+  Future<dynamic> dialogShow(
+    BuildContext context,
+    String tableName,
+    String area,
+    String tokenparam,
+  ) {
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black,
         title: Text(
-          "Apakah anda akan mengunduh file Laporan Teknik : $nameFile - area ${widget.area}?",
-          style: TextStyle(
+          "Apakah anda akan mengunduh file Laporan Teknik : $tableName - Area ${widget.area}?",
+          textAlign: TextAlign.justify,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 15.0,
+            height: 1.5,
           ),
         ),
         actions: [
@@ -347,7 +369,7 @@ class _GridLaporanState extends State<GridLaporan> {
             ),
             onPressed: () {
               isYes = false;
-              Navigator.of(ctx).pop(true);
+              Navigator.of(ctx).pop(false);
             },
           ),
           TextButton(
@@ -356,13 +378,10 @@ class _GridLaporanState extends State<GridLaporan> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
-              await scaffoldMessage(
-                  context, area, "Anda telah mengunduh $tableName area ");
               try {
-                await download(nameFile, tokenparam, tableName, widget.area!);
+                // await download(nameFile, tokenparam, tableName, widget.area!);
                 Navigator.of(ctx).pop(true);
               } catch (error) {
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 throw (error);
               }
             },
@@ -372,21 +391,15 @@ class _GridLaporanState extends State<GridLaporan> {
     );
   }
 
-  Future<void> scaffoldMessage(
-      BuildContext context, String area, String message) async {
-    ScaffoldMessenger.of(context).showSnackBar(
+  void showSnackbar(String message) {
+    var currentScaffold = widget.globalScaffoldKey.currentState;
+    currentScaffold
+        .hideCurrentSnackBar(); // If there is a snackbar visible, hide it before the new one is shown.
+    currentScaffold.showSnackBar(
       SnackBar(
+        content: Text(message),
         backgroundColor: Colors.black,
-        duration: const Duration(
-          seconds: 15,
-        ),
-        content: Text(
-          "$message ${widget.area} \n Anda bisa membukanya di folder /Downloads/nico/",
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-          textAlign: TextAlign.center,
-        ),
+        dismissDirection: DismissDirection.startToEnd,
       ),
     );
   }

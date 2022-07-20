@@ -5,6 +5,7 @@ import 'package:nicov1/models/area.dart';
 import 'package:nicov1/models/laporan.dart';
 import 'package:nicov1/providers/data_area.dart';
 import 'package:nicov1/providers/data_laporan.dart';
+import 'package:nicov1/screens/login_screen.dart';
 import 'package:nicov1/widgets/button_bottom.dart';
 import 'package:provider/provider.dart';
 
@@ -13,26 +14,26 @@ import '../providers/auth.dart';
 import 'grid_laporan.dart';
 
 class TabData extends StatefulWidget {
-  TabData(
-      {Key? key,
-      required this.area,
-      required this.areaParam,
-      required this.laporan,
-      required this.jabatan,
-      required this.dataGet})
-      : super(key: key);
+  TabData({
+    Key? key,
+    required this.area,
+    required this.areaParam,
+    required this.laporan,
+    required this.jabatan,
+    required this.dataGet,
+  }) : super(key: key);
   final List<Area> area;
   final String areaParam;
   final Future<List<Laporan>> laporan;
   final String? jabatan;
   Future<List<Laporan>>? dataGet;
-
   @override
   State<TabData> createState() => _TabDataState();
 }
 
 class _TabDataState extends State<TabData> {
   String? areaParamChild;
+  final globalScaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _TabDataState extends State<TabData> {
     return DefaultTabController(
       length: widget.area.length,
       child: Scaffold(
+        key: globalScaffoldKey,
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.black,
@@ -69,6 +71,9 @@ class _TabDataState extends State<TabData> {
                   () {
                     areaParamChild =
                         widget.area.elementAt(index).DataArea.toString();
+                    widget.dataGet =
+                        Provider.of<DataLaporan>(context, listen: false)
+                            .get(areaParamChild!);
                   },
                 );
               },
@@ -101,7 +106,7 @@ class _TabDataState extends State<TabData> {
                         ((value) => Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const MyApp(),
+                                builder: (context) => const LoginScreen(),
                               ),
                             )),
                       );
@@ -123,6 +128,7 @@ class _TabDataState extends State<TabData> {
                   laporan: _laporan,
                   area: e.DataArea.toString(),
                   dataGet: widget.dataGet,
+                  globalScaffoldKey: globalScaffoldKey,
                 ),
               )
               .toList(),

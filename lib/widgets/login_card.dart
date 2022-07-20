@@ -22,15 +22,33 @@ class _LoginCardState extends State<LoginCard> {
   void _showErrorDialog(String msg) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        title: const Text("Error has occured"),
-        content: Text(msg),
+        title: const Text(
+          "Terjadi Kesalahan",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.black,
+        content: Text(
+          msg,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text("Close"),
+          TextButton(
+            onPressed: () => {Navigator.of(context).pop()},
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white,
+            ),
+            child: const Text(
+              "Close",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
           )
         ],
       ),
@@ -58,7 +76,7 @@ class _LoginCardState extends State<LoginCard> {
             'Maaf username salah atau anda tidak berada di satuan kerja OMM';
       } else if (error.toString().contains(
           "Username / Password Salah atau anda tidak punya hak akses.")) {
-        errorMsg = "Username / Password Salah atau anda tidak punya hak akses.";
+        errorMsg = "Username / Password salah atau anda tidak punya hak akses.";
       }
       _showErrorDialog(errorMsg);
     } catch (error) {

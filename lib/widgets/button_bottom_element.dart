@@ -64,7 +64,7 @@ class _ButtonBottomElementState extends State<ButtonBottomElement> {
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black,
         title: Text(
-          "Apakah anda akan approve laporan area $areaParam?",
+          "Apakah anda akan approve laporan Area $areaParam?",
           style: const TextStyle(
             color: Colors.white,
             fontSize: 15,
@@ -97,7 +97,7 @@ class _ButtonBottomElementState extends State<ButtonBottomElement> {
                   (value) => scaffoldMsgr(
                     context,
                     areaParam,
-                    "Terima kasih telah melakukan approve pada area ",
+                    "Terima kasih telah melakukan approve pada Area ",
                   ),
                 );
               } catch (error) {

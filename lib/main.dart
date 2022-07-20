@@ -59,8 +59,8 @@ class MyApp extends StatelessWidget {
                         : snapshot.connectionState == ConnectionState.active
                             ? const SplashScreen()
                             : snapshot.connectionState == ConnectionState.done
-                                ? const LoginScreen()
-                                : const MainScreen();
+                                ? LoginScreen()
+                                : const SplashScreen();
                   },
                 ),
           routes: {
